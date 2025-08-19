@@ -34,7 +34,7 @@ const NoChatSelected = () => {
           <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-tr from-indigo-400 to-fuchsia-400 flex items-center justify-center shadow-lg">
             <MessageSquare className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-4xl sm:text-10xl font-extrabold mt- 100 tracking-tight bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent drop-shadow-sm">
+          <h2 className="text-4xl sm:text-10xl font-extrabold mt-100 tracking-tight bg-gradient-to-r from-indigo-500 via-purple-500 to-fuchsia-500 bg-clip-text text-transparent drop-shadow-sm">
             Welcome to Connectly
           </h2>
           <p className="text-slate-600 mt-5 text-lg max-w-2xl mx-auto">

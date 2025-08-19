@@ -89,6 +89,13 @@ export const updateProfile = async (req, res) => {
   try {
     const { profilePic, fullName } = req.body;
     const userId = req.user._id;
+    
+    // Log request info for debugging
+    console.log(`Profile update request for user: ${userId}`);
+    console.log(`Request body size: ${JSON.stringify(req.body).length} characters`);
+    if (profilePic) {
+      console.log(`Profile pic data length: ${profilePic.length} characters`);
+    }
 
     // Build update object based on provided fields
     const updateData = {};
@@ -97,8 +104,27 @@ export const updateProfile = async (req, res) => {
     }
 
     if (profilePic) {
-      const uploadResponse = await cloudinary.uploader.upload(profilePic);
-      updateData.profilePic = uploadResponse.secure_url;
+      // Check if Cloudinary is configured
+      if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+        // Fallback: store base64 directly (not recommended for production)
+        console.log("Cloudinary not configured, storing base64 image directly");
+        updateData.profilePic = profilePic;
+      } else {
+        try {
+          // Handle base64 image data with Cloudinary
+          const uploadResponse = await cloudinary.uploader.upload(profilePic, {
+            folder: 'chat_app_profiles',
+            transformation: [
+              { width: 400, height: 400, crop: 'fill', gravity: 'face' },
+              { quality: 'auto:good' }
+            ]
+          });
+          updateData.profilePic = uploadResponse.secure_url;
+        } catch (uploadError) {
+          console.log("Cloudinary upload error:", uploadError);
+          return res.status(400).json({ message: "Failed to upload image. Please try again." });
+        }
+      }
     }
 
     if (Object.keys(updateData).length === 0) {

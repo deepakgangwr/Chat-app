@@ -16,12 +16,24 @@ dotenv.config();
 const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
-app.use(express.json());
+// Increase body parser limit for image uploads (50MB)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 app.use(cors({
   origin: true,
   credentials: true
 }));
+
+// Add error handling middleware for large payloads
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ 
+      message: "Request body too large. Please use a smaller image (max 5MB)." 
+    });
+  }
+  next(err);
+});
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
