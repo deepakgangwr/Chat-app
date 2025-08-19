@@ -18,20 +18,9 @@ const __dirname = path.resolve();
 
 app.use(express.json());
 app.use(cookieParser());
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://connectly12.netlify.app"
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
+  origin: true,
+  credentials: true
 }));
 
 app.use("/api/auth", authRoutes);

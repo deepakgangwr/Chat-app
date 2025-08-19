@@ -35,7 +35,7 @@ const ChatContainer = () => {
 
   if (isMessagesLoading) {
     return (
-      <div className="flex-1 flex flex-col overflow-auto">
+      <div className="flex-1 flex flex-col overflow-auto bg-gradient-to-br from-indigo-50 via-white to-fuchsia-50">
         <ChatHeader />
         <MessageSkeleton />
         <MessageInput />
@@ -44,48 +44,77 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto">
-      <ChatHeader />
+    <div className="flex-1 flex flex-col overflow-auto bg-gradient-to-br from-indigo-50 via-white to-fuchsia-50">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-20 bg-white/60 backdrop-blur-lg border-b border-white/20 shadow-sm">
+        <ChatHeader />
+      </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {messages.map((message, idx) => (
           <div
             key={message._id}
-            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
-            ref={messageEndRef}
+            className={`flex items-start gap-3 animate-fadeIn ${
+              message.senderId === authUser._id ? "justify-end" : "justify-start"
+            }`}
+            ref={idx === messages.length-1 ? messageEndRef : null}
           >
-            <div className=" chat-image avatar">
-              <div className="size-10 rounded-full border">
+            {/* Avatar */}
+            {message.senderId !== authUser._id && (
+              <div className="h-10 w-10 rounded-full border-2 border-fuchsia-300 shadow-md overflow-hidden hover:scale-105 transition-transform">
                 <img
-                  src={
-                    message.senderId === authUser._id
-                      ? authUser.profilePic || "/avatar.png"
-                      : selectedUser.profilePic || "/avatar.png"
-                  }
-                  alt="profile pic"
+                  src={selectedUser.profilePic || "/avatar.png"}
+                  alt="profile"
+                  className="h-full w-full object-cover"
                 />
               </div>
-            </div>
-            <div className="chat-header mb-1">
-              <time className="text-xs opacity-50 ml-1">
-                {formatMessageTime(message.createdAt)}
-              </time>
-            </div>
-            <div className="chat-bubble flex flex-col">
+            )}
+
+            {/* Message Bubble */}
+            <div
+              className={`max-w-[70%] rounded-2xl px-10 py-0.0 shadow-md text-sm sm:text-base leading-relaxed ${
+                message.senderId === authUser._id
+                  ? "bg-gradient-to-br from-indigo-500 to-fuchsia-500 text-white rounded-br-none"
+                  : "bg-white/80 backdrop-blur-md border border-gray-200 rounded-bl-none"
+              }`}
+            >
               {message.image && (
                 <img
                   src={message.image}
                   alt="Attachment"
-                  className="sm:max-w-[200px] rounded-md mb-2"
+                  className="sm:max-w-[220px] rounded-xl mb-2 shadow-sm"
                 />
               )}
               {message.text && <p>{message.text}</p>}
+
+              <div
+                className={`text-[12px] mt-0 opacity-70 ${
+                  message.senderId === authUser._id ? "text-gray-200" : "text-gray-500"
+                }`}
+              >
+                {formatMessageTime(message.createdAt)}
+              </div>
             </div>
+
+            {/* Own Avatar */}
+            {message.senderId === authUser._id && (
+              <div className="h-10 w-10 rounded-full border-2 border-indigo-400 shadow-md overflow-hidden hover:scale-105 transition-transform">
+                <img
+                  src={authUser.profilePic || "/avatar.png"}
+                  alt="profile"
+                  className="h-full w-full object-cover"
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
 
-      <MessageInput />
+      {/* Input Box */}
+      <div className="sticky bottom-0 bg-white/70 backdrop-blur-md border-t border-white/20 shadow-lg p-2">
+        <MessageInput />
+      </div>
     </div>
   );
 };

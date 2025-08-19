@@ -1,9 +1,2 @@
-import { create } from "zustand";
-
-export const useThemeStore = create((set) => ({
-  theme: localStorage.getItem("chat-theme") || "coffee",
-  setTheme: (theme) => {
-    localStorage.setItem("chat-theme", theme);
-    set({ theme });
-  },
-}));
+// Theme fixed to dark; no toggling.
+export const useThemeStore = () => ({ theme: "dark", toggle: () => {} });
