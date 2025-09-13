@@ -21,9 +21,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.NODE_ENV === "production" 
-    ? [process.env.FRONTEND_URL, "https://chat-app-822b.onrender.com"]
-    : ["http://localhost:5173"],
+  origin: true,
   credentials: true
 }));
 
